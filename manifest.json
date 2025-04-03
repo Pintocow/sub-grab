@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+    "name": "Sub-grab",
+    "version": "1.0",
+  
+    "description": "Helps aquired jobs at frontline sub service",
+    "homepage_url": "https://github.com/Pintocow/sub-grab",
+  
+    "permissions": ["activeTab"],
+  
+    "browser_action": {
+      "default_icon": "icon.png",
+      "default_title": "Sub-grab",
+      "default_popup": "popup.html"
+    }
+  }
+  

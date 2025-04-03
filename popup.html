@@ -1,1 +1,28 @@
-<HTML> 
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+    <div id="popup-content">
+      <form id="options">
+        <fieldset name="Options">
+            <label for="reload-time">Reload interval: </label>
+            <input type="number" id="reload-time" value="60" /><br />
+            <label for="halfday">Accept half days: </label>
+            <input type="checkbox" id="halfday" /><br />
+        </fieldset>
+        <fieldset name="Keywords">
+            <label for="reject-on">Reject on matches:</label>
+            <textarea id="reject-on">Reject on matches here separated by commas</textarea> <br />
+            <label for="accept-on">Accept on matces:</label>
+            <textarea id="accept-on">Accept on matches here separated by commas</textarea><br />
+        </fieldset>
+        <button id="start-button">Start</button>
+      </form>
+    </div>
+    <script src="code.js"></script>
+  </body>
+</html>
