@@ -12,3 +12,17 @@ function determineAcceptance(){
 }
 
 //fill the options with the currently saved values from a file
+function fillValues(filename){
+
+}
+
+
+
+
+//run the remote code on the content page
+browser.tabs.executeScript({ file: "/content_script.js" })
+
+//load settings and set the settings to save on change? or save button!! or start button? 
+
+//set up the start stop button
+
