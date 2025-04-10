@@ -9,15 +9,14 @@
   <body>
     <div id="popup-content">
       <form id="options">
-        <!---
+        
         <fieldset name="Options">
             <legend>Options</legend>
             <label for="reload-time">Reload interval: </label>
             <input type="number" id="reload-time" value="60" /><br />
-            <label for="halfday">Accept half days: </label>
-            <input type="checkbox" id="halfday" /><br />
         </fieldset>
-        <fieldset name="Keywords">
+        <!---
+        <fieldset name="Rules">
             <legend>Which jobs to accept</legend>
             <label for="reject-on">Reject on matches:</label>
             <textarea id="reject-on">Reject on matches here separated by commas</textarea> <br />
@@ -25,7 +24,11 @@
             <textarea id="accept-on">Accept on matches here separated by commas</textarea><br />
         </fieldset>
         -->
-        <button id="start-button">Start</button>
+        <button type="button" id="run-button">Start</button> <br />
+        <br />
+        <div id="error-display" class="errors hidden">
+          This is where errors will be put and this should be hidden right now.
+        </div>
       </form>
     </div>
     <script src="code.js"></script>
