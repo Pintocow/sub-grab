@@ -8,27 +8,40 @@
 let currentlyRunning = false;
 let mainTaskIntervalId = 0; 
 
-
-
 //load settings and set the settings to save on change? or save button!! or start button? 
 
 //set up the start stop button
 document.getElementById('run-button').onclick = toggleStartStop;
 
+//run listener for messages
+browser.runtime.onMessage.addListener(handleMessage);
 
 
 
-
-//refreshes the page, then loads the content script on the page
-//the content script will send a message to the listener 
-//the listener will 
-function mainTask(){
-    browers.tab.reload().then(runContentScript);
+//gets messages from the content script and handles them
+function handleMessage(message){
+    switch(message.type){
+        case 'job':
+            let testDiv = document.getElementById('message-test');
+            testDiv.innerHTML += `${message.name}:  ${message.title} \n ${message.dateStart} - ${message.dateEnd}  ${message.startTime} - ${message.endTime} ${message.type}  ${message.locationName}  :: ${message.id} <br />\n`;
+            break;
+        default:
+            reportError( {'message': 'misunderstood message type recieved'} );
+            break;
+    }
 }
 
-function runContentScript(){
-    //run the remote code on the content page
-    browser.tabs.executeScript({ file: "/content_script.js" })
+
+//refreshes the page, then sends a message to the page to get jobs
+function mainTask(){
+    function jobRequestMessage(tabs){
+        browser.tabs.sendMessage( tabs[0].id, {'type' : 'job-request'} );
+    }
+    function getActiveTab(){
+        return browser.tabs.query( { active : true, currentWindow: true } );
+    }
+    
+    browser.tabs.reload().then(getActiveTab).then(jobRequestMessage);
 }
 
 
@@ -45,22 +58,30 @@ function fillValues(filename){
 
 }
 
+function setLocalStorage(id = 'none', value = null){
+    //for each input in fieldset options store the value of it??!!
+    theElement = document.getElementById(id);
+    browser.storage.local.set(id, value ?? theElement.innerHTML);//or value?? not perfect!!
+}
+
 //toggles whether the extension is currently doing its task
 function toggleStartStop(){
     let runButton = document.getElementById('run-button');
     if(currentlyRunning){
-        //stop the script from running!!!!
-        Window.clearInterval(mainTaskIntervalId);
+        window.clearInterval(mainTaskIntervalId);
         runButton.innerHTML = "Start";
     }else{
-        //start the script up!!!!
-        mainTaskIntervalId = Window.setInterval(mainTask, document.getElementById('reload-time').value*1000);
+        mainTaskIntervalId = window.setInterval(mainTask, document.getElementById('reload-time').value*1000);
         runButton.innerHTML = "Stop";
+
     }
     currentlyRunning = !currentlyRunning;
 }
 
 
 function reportError(e){
-    console.log(e);
+    let errorDiv = document.querySelector('#error-display');
+    errorDiv.classList.remove('hidden');
+    errorDiv.innerHTML += '<br />\n' + e.message;
+    console.error("sub-grab: " + e.message);
 }
