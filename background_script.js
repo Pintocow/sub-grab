@@ -37,10 +37,7 @@ function handleJobs(jobs){
             jobsThisRun[job.id].processed = 'ignore';
             if(ruleApplies(rule, job)){
                 //must get active tab
-                let getActiveTab = function(){
-                    return browser.tabs.query( { active : true, currentWindow: true } );
-                }
-                getActiveTab().then( (tabs) => browser.tabs.sendMessage( tabs[0].id,  { type : rule.acceptReject, id : job.id } )  );
+                getTargetTab().then( (tabs) => browser.tabs.sendMessage( tabs[0].id,  { type : rule.acceptReject, id : job.id } )  );
                 //browser.runtime.sendMessage( { type : rule.acceptReject, id : job.id } );
                 jobsThisRun[job.id].processed = rule.acceptReject;
                 break;
@@ -89,15 +86,16 @@ function ruleApplies(rule, job){
 
 //refreshes the page, then sends a message to the page to get jobs
 function mainTask(){
-    browser.tabs.reload().then(getActiveTab).then(jobRequestMessage);
-    getActiveTab().then(jobRequestMessage);
+    getTargetTab().then((t) => browser.tabs.reload(t[0].id)).then(getTargetTab).then(jobRequestMessage);
+    //getTargetTab().then(jobRequestMessage); //for testing without reload
 
     function jobRequestMessage(tabs){
         browser.tabs.sendMessage( tabs[0].id, {'type' : 'job-request'} );
     }
-    function getActiveTab(){
-        return browser.tabs.query( { active : true, currentWindow: true } );
-    }
+}
+
+function getTargetTab(){
+    return browser.tabs.query( { url:"*://absencesub.frontlineeducation.com/Substitute/Home" } ); 
 }
 
 
