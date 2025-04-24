@@ -20,14 +20,15 @@
           processJobs();
           break;
         case "accept":
-          //document.getElementById(message.id).querySelector("a.acceptButton").click();
+          document.getElementById(message.id).querySelector("a.acceptButton").click();
           console.log(`accept on ${message.id}`);
           break;
         case "reject":
-          //document.getElementById(message.id).querySelector("a.rejectButton").click();
+          document.getElementById(message.id).querySelector("a.rejectButton").click();
           console.log(`reject on ${message.id}`);
           break;
         default:
+          console.log('unknown message in content script ')
           //!!add some kind of error
           break;
       }

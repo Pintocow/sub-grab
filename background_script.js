@@ -36,7 +36,12 @@ function handleJobs(jobs){
         for(rule of runningOptions.rules){
             jobsThisRun[job.id].processed = 'ignore';
             if(ruleApplies(rule, job)){
-                browser.runtime.sendMessage( { type : rule.acceptReject, id : job.id } );
+                //must get active tab
+                let getActiveTab = function(){
+                    return browser.tabs.query( { active : true, currentWindow: true } );
+                }
+                getActiveTab().then( (tabs) => browser.tabs.sendMessage( tabs[0].id,  { type : rule.acceptReject, id : job.id } )  );
+                //browser.runtime.sendMessage( { type : rule.acceptReject, id : job.id } );
                 jobsThisRun[job.id].processed = rule.acceptReject;
                 break;
             }
@@ -71,12 +76,12 @@ function ruleApplies(rule, job){
     for(let regExString of regExArray){
         let regExBuild = regExString.split('/');
         try{
-            let regEx = RegExp(regExBuild[1], regExBuild[2]);
+           let regEx = RegExp(regExBuild[1], regExBuild[2]);
             if(regEx.test(fullText)){
-                return True;
+                return true;
             }
         }catch{
-            console.log('sub-grab: probably a bad regex given');
+            console.log('sub-grab: probably a bad regex given:  ' + regExBuild);
         }
     }
     return false;
@@ -84,7 +89,7 @@ function ruleApplies(rule, job){
 
 //refreshes the page, then sends a message to the page to get jobs
 function mainTask(){
-    //browser.tabs.reload().then(getActiveTab).then(jobRequestMessage);
+    browser.tabs.reload().then(getActiveTab).then(jobRequestMessage);
     getActiveTab().then(jobRequestMessage);
 
     function jobRequestMessage(tabs){
