@@ -31,11 +31,11 @@ function fillValues(){
             </thead>
             <tbody>`;
         for(job of Object.values(options.jobsThisRun)){
-            HTMLstring += `<tr id="${job.id}" class="${job.acceptReject}">
+            HTMLstring += `<tr id="${job.id}" class="${job.processed}">
                     <td class="location" colspan="2"> ${job.locationName} </td>
                     <td class="dates"> ${job.dateStart} - ${job.dateEnd} </td>
                 </tr>
-                <tr class="${job.acceptReject}">
+                <tr class="${job.processed}">
                     <td class="name"> ${job.name} </td>
                     <td class="title"> ${job.title} </td>
                     <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName} </td>
@@ -50,6 +50,9 @@ function fillValues(){
                 <th colspan="4">Past Jobs</th>
             </thead>
             <tbody>`;
+            //do this better!!
+            if(!options.allJobs)
+                options.allJobs = {};
         for(job of Object.values(options.allJobs)){
             HTMLstring += `<tr id="${job.id}" class="${job.acceptReject}">
                     <td class="location" colspan="2"> ${job.locationName} </td>
@@ -132,18 +135,18 @@ function newRule(rule = null){
                         <td><input name="start-date" type="date"><br />
                         <input name="end-date" type="date"></td>
                         <td><select name="duration">
-                            <option value="all">All</option>
-                            <option value="full" selected>Full</option>
+                            <option value="all" selected>All</option>
+                            <option value="full">Full</option>
                             <option value="am">AM</option>
                             <option value="pm">PM</option>
                         </select></td>
                         <td>
-                            <textarea name="reg-ex">Rule matches in regular expression form separated by commas</textarea>
+                            <textarea name="reg-ex">high school</textarea>
                         </td>
                         <td><button class="remove-button" type="button">Delete</button></td>`;
     newRow.querySelector('.remove-button').onclick = deleteRule;
     newRow.querySelector("[name='start-date']").valueAsDate = new Date();
-    newRow.querySelector("[name='end-date']").valueAsDate = new Date();
+    newRow.querySelector("[name='end-date']").valueAsDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
 
 
     if(rule != null){

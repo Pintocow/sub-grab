@@ -48,7 +48,7 @@
 }
 
 #log-table th{
-    background-color: rgb(94, 98, 170);
+    background-color: rgb(170, 94, 94);
     color: white;
 }
 
@@ -80,4 +80,8 @@
 #log-table td.location{
     font-weight: bold;
     font-size: 1.1em;
+}
+
+#log-table tr.id-time{
+    text-align: center;
 }

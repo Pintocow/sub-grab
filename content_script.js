@@ -20,17 +20,27 @@
           processJobs();
           break;
         case "accept":
-          document.getElementById(message.id).querySelector("a.acceptButton").click();
           console.log(`accept on ${message.id}`);
+          document.getElementById(message.id).querySelector("a.acceptButton").click();
+          //if the button has a dialog it needs to accept again 
+          setTimeout(pressDialogAccept, 1000);
           break;
         case "reject":
-          document.getElementById(message.id).querySelector("a.rejectButton").click();
           console.log(`reject on ${message.id}`);
+          document.getElementById(message.id).querySelector("a.rejectButton").click();
           break;
         default:
           console.log('unknown message in content script ')
           //!!add some kind of error
           break;
+      }
+      
+      function pressDialogAccept(){
+        let buttonHolder = document.getElementsByClassName("ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only");
+        for(let clickButton of buttonHolder){
+          if(clickButton.innerHTML == `<span class="ui-button-text">Accept</span>`)
+            clickButton.click();
+        }
       }
     }
 
