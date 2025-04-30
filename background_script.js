@@ -5,6 +5,7 @@ let mainTaskIntervalId = 0;
 //run listener for messages
 browser.runtime.onMessage.addListener(handleMessage);
 
+let allJobs = browser.storage.local.get('allJobs');
 browser.storage.local.set({'jobsThisRun': {}});
 let jobsThisRun = {};
 let runningOptions = {};
@@ -31,7 +32,9 @@ function handleMessage(message){
 
 function handleJobs(jobs){
     for(let job of jobs){
+        job.discoveryTime = Date.now();
         jobsThisRun[job.id] = {...job};
+        allJobs[job.id] = {...job};
         //check the job or whatever!!
         for(rule of runningOptions.rules){
             jobsThisRun[job.id].processed = 'ignore';
@@ -45,6 +48,7 @@ function handleJobs(jobs){
         }
     }
     browser.storage.local.set({'jobsThisRun' : jobsThisRun});
+    browser.storage.local.set({'allJobs' : allJobs});
 }
 
 //compares a rule to a job and returns true if it applies or false if it doesnt

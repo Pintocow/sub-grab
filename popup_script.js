@@ -16,9 +16,7 @@ function fillValues(){
     function handleStorage(options){
         document.getElementById('reload-time').value = options.time ?? 5;
         //create and fill all the rules in the rules array!!
-        for(rule in options.rules ?? {}){
-            //nothing for now.
-        }
+
         document.getElementById('run-button').innerHTML = options.running ? "Stop" : "Start";
         isRunning = !!options.running;
 
@@ -26,14 +24,46 @@ function fillValues(){
             newRule(rule);
         }
 
-        let HTMLstring = '';
+        //jobs run this iteration of the program
+        let HTMLstring = `<table id="this-run-table">
+            <thead>
+                <th colspan="4">Jobs This Run</th>
+            </thead>
+            <tbody>`;
         for(job of Object.values(options.jobsThisRun)){
-            //console.log(job);
-            HTMLstring += `${job.name}:  ${job.title} 
-                            \n ${job.dateStart} - ${job.dateEnd}  ${job.startTime} - ${job.endTime} 
-                            ${job.durationName}  ${job.locationName}  :: ${job.id} <br />\n ${job.processed} <br /> <br />\n\n`;//!!
+            HTMLstring += `<tr id="${job.id}" class="${job.acceptReject}">
+                    <td class="location" colspan="2"> ${job.locationName} </td>
+                    <td class="dates"> ${job.dateStart} - ${job.dateEnd} </td>
+                </tr>
+                <tr class="${job.acceptReject}">
+                    <td class="name"> ${job.name} </td>
+                    <td class="title"> ${job.title} </td>
+                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName} </td>
+                </tr>`;
         }
-        document.getElementById('run-log').innerHTML = "Run Log: <br />\n " + HTMLstring;
+        HTMLstring += ` </tr></tbody></table>`;
+        document.getElementById('run-log').innerHTML = HTMLstring;
+
+        //jobs from the past log
+        HTMLstring = `<table id="log-table">
+            <thead>
+                <th colspan="4">Past Jobs</th>
+            </thead>
+            <tbody>`;
+        for(job of Object.values(options.allJobs)){
+            HTMLstring += `<tr id="${job.id}" class="${job.acceptReject}">
+                    <td class="location" colspan="2"> ${job.locationName} </td>
+                    <td class="dates"> ${job.dateStart} - ${job.dateEnd} </td>
+                </tr>
+                <tr class="${job.acceptReject}">
+                    <td class="name"> ${job.name} </td>
+                    <td class="title"> ${job.title} </td>
+                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName} </td>
+                </tr>
+                <tr class="id-time"><td colspan="4"> #:${job.id} at ${job.discoveryTime} </td></tr>`;
+        }
+        HTMLstring += ` </tr></tbody></table>`;
+        document.getElementById('past-run-log').innerHTML = HTMLstring;
     }
 }
 
