@@ -30,15 +30,15 @@ function fillValues(){
                 <th colspan="4">Jobs This Run</th>
             </thead>
             <tbody>`;
-        for(job of Object.values(options.jobsThisRun)){
+        for(job of Object.values(options.jobsThisRun).sort((a,b) => b.discoveryTime - a.discoveryTime)){
             HTMLstring += `<tr id="${job.id}" class="${job.processed}">
                     <td class="location" colspan="2"> ${job.locationName} </td>
-                    <td class="dates"> ${job.dateStart} - ${job.dateEnd} </td>
+                    <td class="dates"> ${job.dateStart.slice(0, -5)} ${job.dateStart == job.dateEnd ? '' : '- '+job.dateEnd.slice(0, -5)} </td>
                 </tr>
                 <tr class="${job.processed}">
                     <td class="name"> ${job.name} </td>
-                    <td class="title"> ${job.title} </td>
-                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName} </td>
+                    <td class="title"> ${job.title.replace("Teacher", "")} </td>
+                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName.replace(" Day", "").replace("Half", "")} </td>
                 </tr>`;
         }
         HTMLstring += ` </tr></tbody></table>`;
@@ -56,14 +56,14 @@ function fillValues(){
         for(job of Object.values(options.allJobs)){
             HTMLstring += `<tr id="${job.id}" class="${job.acceptReject}">
                     <td class="location" colspan="2"> ${job.locationName} </td>
-                    <td class="dates"> ${job.dateStart} - ${job.dateEnd} </td>
+                    <td class="dates"> ${job.dateStart.slice(0, -5)} ${job.dateStart == job.dateEnd ? '' : '- '+job.dateEnd.slice(0, -5)} </td>
                 </tr>
                 <tr class="${job.acceptReject}">
                     <td class="name"> ${job.name} </td>
                     <td class="title"> ${job.title} </td>
-                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName} </td>
+                    <td class="times"> ${job.startTime} - ${job.endTime} : ${job.durationName.replace(" Day", "").replace("Half", "")} </td>
                 </tr>
-                <tr class="id-time"><td colspan="4"> #:${job.id} at ${job.discoveryTime} </td></tr>`;
+                <tr class="id-time"><td colspan="4"> # : ${job.id}    at    ${(new Date(job.discoveryTime)).toLocaleDateString(undefined, {month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"})} </td></tr>`;
         }
         HTMLstring += ` </tr></tbody></table>`;
         document.getElementById('past-run-log').innerHTML = HTMLstring;

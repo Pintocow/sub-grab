@@ -5,8 +5,9 @@ let mainTaskIntervalId = 0;
 //run listener for messages
 browser.runtime.onMessage.addListener(handleMessage);
 
-let allJobs = browser.storage.local.get('allJobs');
-browser.storage.local.set({'jobsThisRun': {}});
+let allJobs = {};
+browser.storage.local.get('allJobs').then((res) => allJobs = res ?? {});
+browser.storage.local.set({'jobsThisRun': {}, 'running':false});
 let jobsThisRun = {};
 let runningOptions = {};
 
@@ -35,8 +36,9 @@ function handleJobs(jobs){
     for(let job of jobs){
         job.discoveryTime = Date.now();
         jobsThisRun[job.id] = {...job};
-        //allJobs[job.id] = {...job};
-        //check the job or whatever!!
+        allJobs[job.id] = {...job};
+
+
         for(rule of runningOptions.rules){
             jobsThisRun[job.id].processed = 'ignore';
             if(ruleApplies(rule, job)){
@@ -48,7 +50,7 @@ function handleJobs(jobs){
         }
     }
     browser.storage.local.set({'jobsThisRun' : jobsThisRun});
-   // browser.storage.local.set({'allJobs' : allJobs});
+    browser.storage.local.set({'allJobs' : allJobs});
 }
 
 //compares a rule to a job and returns true if it applies or false if it doesnt
@@ -146,20 +148,6 @@ function toggleStartStop(action, options = null){
         //send a message that its stopped!!
         
     }
-
-
-    /* //oldcode !!
-    let runButton = document.getElementById('run-button');
-    if(currentlyRunning){
-        window.clearInterval(mainTaskIntervalId);
-        runButton.innerHTML = "Start";
-    }else{
-        mainTaskIntervalId = window.setInterval(mainTask, document.getElementById('reload-time').value*1000);
-        runButton.innerHTML = "Stop";
-
-    }
-    currentlyRunning = !currentlyRunning;
-    */
 }
 
 
